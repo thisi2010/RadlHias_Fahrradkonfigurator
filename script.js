@@ -159,7 +159,7 @@ function calcResult() {
     //
     // Korrekturfaktor: langer Rumpf/Arme → eher größer; kurzer Rumpf/kurze Arme → eher kleiner
     const rumpf = groesse - schrittl; // Rumpflänge näherungsweise
-    const rumpfNorm = groesse * 0.47; // Durchschnittlicher Rumpfanteil ~47% der Körpergröße
+    const rumpfNorm = groesse * 0.53; // Rumpfanteil ~53% der Körpergröße (Körpergröße minus Beinlänge)
     const rumpfDelta = rumpf - rumpfNorm; // positiv = langer Rumpf, negativ = kurzer Rumpf
 
     // Arm-Korrekturfaktor (Normwert ca. 60cm bei 175cm Körpergröße)
@@ -205,7 +205,7 @@ function calcResult() {
     // ab 187 cm   → XL  (Reach ~420–450 mm)
 
     const rumpfG = groesse - schrittl;
-    const rumpfNormG = groesse * 0.47;
+    const rumpfNormG = groesse * 0.53;
     const rumpfDeltaG = rumpfG - rumpfNormG;
     const armNormG = groesse * 0.343;
     const armDeltaG = armlaenge - armNormG;
@@ -331,7 +331,7 @@ function calcResult() {
     radWhy = `${km === 'km_vhigh' ? 'Mit deinen Wochenkilometern' : 'Für deinen sportlichen Fokus'} auf Asphalt ist das Rennrad die richtige Wahl.`;
     radWarn = alter > 50 ? 'Mit 50+ lohnt sich ein Endurance-Rennrad (aufrechter, komfortabler) statt Race-Geometrie.' : 'Sitz- und Lenkerposition korrekt einstellen – falsche Einstellung führt bei längeren Fahrten zu Schmerzen in Rücken, Nacken und Handgelenken. Wer das Rad intensiv nutzt, für den lohnt sich ein professionelles Bikefitting.';
   } else if (einsatz === 'gravel') {
-    radTyp = '🪨 Gravel-Bike'; radVon = 1000; radBis = 3500;
+    radTyp = 'Gravel-Bike'; radVon = 1000; radBis = 3500;
     radWhy = `Bei deiner Untergrundverteilung (${t1}% Asphalt / ${offroad}% Off-Road) ist ein Gravel-Bike der ehrlichste Kompromiss.`;
     radWarn = '"Gravel" ist ein Trendbegriff – vergleiche konkret Rahmen, Schaltung und Bremsen, nicht den Markennamen.';
   } else if (einsatz === 'mtb_trail') {
@@ -347,17 +347,19 @@ function calcResult() {
     radWhy = `Bei ${t1}% Asphalt und ${offroad}% gemischtem Untergrund ist ein Trekkingrad dein ehrlichster Allrounder.`;
     radWarn = 'Trekkingräder sind aufgrund ihrer komplexen Zubehörteile mit 12 bis 16 kg schwer. Wer heute mit dem Radfahren anfängt, kann schnell Gefallen daran finden – und bald mehr wollen. Bzw. weniger. Nämlich weniger Gewicht am Rad. Diese Möglichkeit sollte vor dem Kauf bedacht werden.';
   }
-  specs.push({ icon: '🚲', label: 'Fahrradtyp', value: radTyp, why: radWhy, warn: radWarn });
-  preise.push({ label: 'Komplettes Rad (Basis)', von: radVon, bis: radBis, note: 'Rahmen + Aufbau ab Händler' });
-
-  // E-Bike-Text immer überschreiben – egal welcher Zweig oben getroffen wurde
-  if (isEbike) {
-    const ebikeFix = specs.find(s => s.label === 'Fahrradtyp');
-    if (ebikeFix) {
-      ebikeFix.why = `Du hast dich für ein Fahrrad mit elektrischer Unterstützung entschieden – und das ist eine gute Entscheidung. Ein E-Bike bringt dich weiter, macht Strecken möglich, die du sonst auslassen würdest, und öffnet die Tür für gemeinsame Ausfahrten mit Freunden und Familie, auch wenn die konditionell unterschiedlich aufgestellt sind. Kurz: Du wirst mehr Rad fahren. Das ist gut für den Körper und die Gesundheit.`;
-      ebikeFix.warn = `Worüber du dir im Klaren sein solltest: Ein Akku hat eine begrenzte Lebensdauer von etwa 3–7 Jahren – danach ist ein Ersatz fällig, der schnell 500–1.000 € kosten kann. Lade deinen Akku regelmäßig und richtig (nicht dauerhaft vollgeladen lagern, nicht tiefentladen). Reifen und Antrieb verschleißen durch das höhere Gewicht und die höheren Geschwindigkeiten schneller als beim normalen Fahrrad – das gehört in deine Betriebskostenrechnung. Und: Entscheide dich für einen Motor eines Markenherstellers – Bosch, Panasonic oder Brose. Damit gehst du von Anfang an bösen Überraschungen und Reklamationen aus dem Weg.`;
+  // E-Bike Einschätzung wenn Frage 10 = "unentschlossen"
+  let radTipp = '';
+  if (ebike === 'ebike_offen') {
+    if (isEbike) {
+      // System empfiehlt E-Bike wegen Alter/Gelände
+      radTipp = '💡 Zur E-Bike Frage: Basierend auf deinem Profil – ' + (alter > 55 ? 'deinem Alter' : '') + (alter > 55 && hm === 'hm_berg' ? ' und ' : '') + (hm === 'hm_berg' ? 'dem bergigen Gelände' : '') + ' – empfehle ich dir ein E-Bike. Der Motor macht genau dort einen Unterschied, wo du ihn wirklich brauchst. Du wirst mehr fahren – und das mit mehr Freude.';
+    } else {
+      // System empfiehlt klassisches Rad
+      radTipp = '💡 Zur E-Bike Frage: Basierend auf deinem Profil brauchst du keinen Motor. Deine Strecken, dein Gelände und deine körperliche Situation sprechen für ein klassisches Fahrrad. Ein E-Bike wäre technisch möglich – bringt dir hier aber keinen echten Mehrwert. Dafür bist du mit einem klassischen Rad leichter unterwegs, sparst bei der Anschaffung und hast deutlich weniger Folgekosten (kein Akku-Verschleiß, einfachere Wartung). Wenn du in ein paar Jahren nochmal überlegst – gut. Aber jetzt kauf dir ein klassisches Rad.';
     }
   }
+  specs.push({ icon: '🚲', label: 'Fahrradtyp', value: radTyp, why: radWhy, warn: radWarn, tipp: radTipp });
+  preise.push({ label: 'Komplettes Rad (Basis)', von: radVon, bis: radBis, note: 'Rahmen + Aufbau ab Händler' });
 
   // ---- FEDERUNG ----
   let fedVal = '', fedWhy = '', fedWarn = '';
@@ -523,7 +525,7 @@ function calcResult() {
   let bremVal = '', bremWhy = '', bremWarn = '', bremTipp = '';
   let bremVon = 0, bremBis = 0;
 
-  if (einsatz === 'city' && km === 'km_low') {
+  if (!isEbike && einsatz === 'city' && km === 'km_low') {
     bremVal = 'Felgenbremse oder mech. Scheibe'; bremVon = 30; bremBis = 80;
     bremWhy = 'Felgenbremsen sind einfacher im Service, Ersatzteile kosten weniger, und die Bremsleistung ist für kurze Stadtfahrten absolut ausreichend. Wer mehr Bremsleistung will, tauscht einfach die Bremsbeläge gegen eine weichere Gummimischung – je weicher der Gummi, desto mehr Biss, desto höher aber auch der Verschleiß. Scheibenbremsen haben grundsätzlich mehr Bremsleistung und sind unabhängig vom Felgenzustand – dafür sind Folgekosten höher und Reparaturen aufwändiger. Bei Regen verlieren Felgenbremsen spürbar an Leistung – wer oft im Regen fährt, ist mit einer mechanischen Scheibenbremse besser bedient.';
     bremWarn = '';
@@ -734,14 +736,71 @@ function calcResult() {
     }).join('');
   }
 
-  // Show result
+  // Ladeanimation → dann Ergebnis zeigen
+  // Step-11 sofort ausblenden, bevor das Overlay erscheint
   document.getElementById('step-11').classList.remove('active');
-  document.getElementById('step-result').classList.add('active');
-  updateProgress(TOTAL + 1);
-  window.scrollTo(0, 0);
 
-  // Konfetti
-  launchConfetti();
+  showLoadingOverlay(function() {
+    document.getElementById('step-result').classList.add('active');
+    updateProgress(TOTAL + 1);
+    window.scrollTo(0, 0);
+    launchConfetti();
+  });
+}
+
+// ---- LADEANIMATION ----
+function showLoadingOverlay(callback) {
+  const delay = 2000 + Math.floor(Math.random() * 2001); // 2–4 Sekunden
+
+  // CSS für Rad-Animation einmalig einfügen
+  if (!document.getElementById('radl-spin-style')) {
+    const style = document.createElement('style');
+    style.id = 'radl-spin-style';
+    style.textContent = '@keyframes radlSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
+    document.head.appendChild(style);
+  }
+
+  const overlay = document.createElement('div');
+  overlay.id = 'loading-overlay';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:var(--cream);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;';
+
+  overlay.innerHTML = `
+    <div style="text-align:center; max-width:300px;">
+      <div style="margin-bottom:28px;">
+        <div style="display:inline-block; animation: radlSpin 1.4s linear infinite;">
+          <svg width="88" height="88" viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="36" fill="none" stroke="#1c3448" stroke-width="5"/>
+            <circle cx="40" cy="40" r="30" fill="none" stroke="#1c3448" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.35"/>
+            <line x1="40" y1="40" x2="40" y2="5"  stroke="#2d6e9e" stroke-width="1.8"/>
+            <line x1="40" y1="40" x2="40" y2="75" stroke="#2d6e9e" stroke-width="1.8"/>
+            <line x1="40" y1="40" x2="5"  y2="40" stroke="#2d6e9e" stroke-width="1.8"/>
+            <line x1="40" y1="40" x2="75" y2="40" stroke="#2d6e9e" stroke-width="1.8"/>
+            <line x1="40" y1="40" x2="65" y2="14" stroke="#2d6e9e" stroke-width="1.8"/>
+            <line x1="40" y1="40" x2="15" y2="66" stroke="#2d6e9e" stroke-width="1.8"/>
+            <line x1="40" y1="40" x2="15" y2="14" stroke="#2d6e9e" stroke-width="1.8"/>
+            <line x1="40" y1="40" x2="65" y2="66" stroke="#2d6e9e" stroke-width="1.8"/>
+            <circle cx="40" cy="40" r="6" fill="#1c3448"/>
+            <circle cx="40" cy="40" r="3" fill="#a8c8dc"/>
+          </svg>
+        </div>
+      </div>
+      <div style="font-family:'Dancing Script',cursive; font-size:28px; color:#1c3448; margin-bottom:14px; line-height:1.2;">Radl Hias</div>
+      <p style="font-family:'Barlow',sans-serif; font-size:14px; color:#4a6a84; line-height:1.8; font-style:italic; margin:0;">
+        Der Radl Hias schaut sich nochmal deine Daten an und überlegt, welches Fahrrad zu Dir passt&nbsp;…
+      </p>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  setTimeout(function() {
+    overlay.style.transition = 'opacity 0.5s ease';
+    overlay.style.opacity = '0';
+    setTimeout(function() {
+      overlay.remove();
+      callback();
+    }, 500);
+  }, delay);
 }
 
 // ---- KONFETTI ----
@@ -893,12 +952,40 @@ function toggleFitStep(num) {
     }, 50);
   }
 }
-// Open first step by default when tab loads
+function toggleGebrauchtStep(num) {
+  const body = document.getElementById('gb-body-' + num);
+  const chev = document.getElementById('gb-chev-' + num);
+  const isOpen = body.style.display !== 'none';
+  // Close all
+  [1,2,3,4,5,6,7].forEach(function(n) {
+    const b = document.getElementById('gb-body-' + n);
+    const c = document.getElementById('gb-chev-' + n);
+    if (b) b.style.display = 'none';
+    if (c) { c.style.transform = 'rotate(0deg)'; c.style.color = 'var(--blue)'; }
+  });
+  // Open clicked if it was closed
+  if (!isOpen) {
+    body.style.display = 'block';
+    chev.style.transform = 'rotate(90deg)';
+    chev.style.color = 'var(--orange)';
+    setTimeout(function() {
+      document.getElementById('gb-step-' + num).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 50);
+  }
+}
+
+// Alle Schritte starten geschlossen
 document.addEventListener('DOMContentLoaded', function() {
-  const b1 = document.getElementById('fit-body-1');
-  const c1 = document.getElementById('fit-chev-1');
-  if (b1) b1.style.display = 'block';
-  if (c1) { c1.style.transform = 'rotate(90deg)'; c1.style.color = 'var(--orange)'; }
+  // Bike-Fitting: alle Schritte geschlossen
+  [1,2,3,4].forEach(function(n) {
+    const b = document.getElementById('fit-body-' + n);
+    if (b) b.style.display = 'none';
+  });
+  // Gebraucht-Check: alle Schritte geschlossen
+  [1,2,3,4,5,6,7].forEach(function(n) {
+    const b = document.getElementById('gb-body-' + n);
+    if (b) b.style.display = 'none';
+  });
 });
 
 function showTab(tab) {
@@ -907,47 +994,53 @@ function showTab(tab) {
   const faqBereich = document.getElementById('faq-bereich');
   const druckBereich = document.getElementById('druck-bereich');
   const fittingBereich = document.getElementById('fitting-bereich');
+  const gebrauchtBereich = document.getElementById('gebraucht-bereich');
   const tabBerater = document.getElementById('tab-berater');
   const tabFaq = document.getElementById('tab-faq');
   const tabDruck = document.getElementById('tab-druck');
   const tabFitting = document.getElementById('tab-fitting');
+  const tabGebraucht = document.getElementById('tab-gebraucht');
 
   // Reset all
-  [tabBerater, tabFaq, tabDruck, tabFitting].forEach(function(t) {
+  [tabBerater, tabFaq, tabDruck, tabFitting, tabGebraucht].forEach(function(t) {
     if (t) { t.style.borderBottomColor = 'transparent'; t.style.color = 'var(--text-dim)'; }
   });
 
-  if (tab === 'berater') {
-    beraterWrap.style.display = '';
-    progWrap.style.display = '';
-    faqBereich.style.display = 'none';
-    druckBereich.style.display = 'none';
-    fittingBereich.style.display = 'none';
-    tabBerater.style.borderBottomColor = 'var(--orange)';
-    tabBerater.style.color = 'var(--navy)';
-  } else if (tab === 'fitting') {
+  // Alle Bereiche verstecken
+  function hideAll() {
     beraterWrap.style.display = 'none';
     progWrap.style.display = 'none';
     faqBereich.style.display = 'none';
     druckBereich.style.display = 'none';
+    fittingBereich.style.display = 'none';
+    if (gebrauchtBereich) gebrauchtBereich.style.display = 'none';
+  }
+
+  if (tab === 'berater') {
+    hideAll();
+    beraterWrap.style.display = '';
+    progWrap.style.display = '';
+    tabBerater.style.borderBottomColor = 'var(--orange)';
+    tabBerater.style.color = 'var(--navy)';
+  } else if (tab === 'gebraucht') {
+    hideAll();
+    if (gebrauchtBereich) gebrauchtBereich.style.display = 'block';
+    tabGebraucht.style.borderBottomColor = 'var(--orange)';
+    tabGebraucht.style.color = 'var(--navy)';
+  } else if (tab === 'fitting') {
+    hideAll();
     fittingBereich.style.display = 'block';
     tabFitting.style.borderBottomColor = 'var(--orange)';
     tabFitting.style.color = 'var(--navy)';
   } else if (tab === 'druck') {
-    beraterWrap.style.display = 'none';
-    progWrap.style.display = 'none';
-    faqBereich.style.display = 'none';
+    hideAll();
     druckBereich.style.display = 'block';
-    fittingBereich.style.display = 'none';
     tabDruck.style.borderBottomColor = 'var(--orange)';
     tabDruck.style.color = 'var(--navy)';
     berechneDruck();
   } else {
-    beraterWrap.style.display = 'none';
-    progWrap.style.display = 'none';
+    hideAll();
     faqBereich.style.display = 'block';
-    druckBereich.style.display = 'none';
-    fittingBereich.style.display = 'none';
     renderFaqAccordion();
     tabFaq.style.borderBottomColor = 'var(--orange)';
     tabFaq.style.color = 'var(--navy)';
@@ -977,67 +1070,114 @@ function berechneDruck() {
 
   if (!breite || !profil || !typ || !grund || !rad) return;
 
-  // Laufrad-Korrektiv: größeres Rad = etwas weniger Druck nötig
-  // 26" = Referenz (+5%), 27.5" = neutral, 28/700c = -3%, 29" = -5%, Rennrad = +8% (spezifisch)
+  const breiteN = parseInt(breite); // mm; '66' = 2,4–2,6" MTB
+
+  // ── 1. REFERENZ-DRÜCKE bei 75 kg Fahrergewicht, 28"/700c, Asphalt, Schlauch ──
+  // Quellen: Schwalbe Pressure Prof, SILCA Pro Calculator, ADAC 2026, Maxxis Tech Guide
+  // Hinterrad trägt ~57 % des Systemgewichts, Vorderrad ~43 %
+  const refTable = [
+    { w: 23, h: 6.8,  v: 5.8  },  // 23 mm – Rennrad-Slick
+    { w: 28, h: 4.9,  v: 4.2  },  // 28 mm – Trekking/Gravel schmal
+    { w: 38, h: 3.4,  v: 2.9  },  // 38–40 mm – Trekking/Hybrid
+    { w: 50, h: 2.7,  v: 2.3  },  // 50–54 mm – City/Hybrid breit
+    { w: 57, h: 2.1,  v: 1.85 },  // 57–60 mm ≈ 2,1–2,25" MTB
+    { w: 66, h: 1.85, v: 1.60 },  // 61–66 mm ≈ 2,4–2,6" MTB
+  ];
+
+  // Referenzwert (lineare Interpolation für Zwischenwerte)
+  let refH, refV;
+  const lower = [...refTable].reverse().find(e => e.w <= breiteN) || refTable[0];
+  const upper = refTable.find(e => e.w >= breiteN) || refTable[refTable.length - 1];
+  if (lower.w === upper.w) {
+    refH = lower.h; refV = lower.v;
+  } else {
+    const t = (breiteN - lower.w) / (upper.w - lower.w);
+    refH = lower.h + t * (upper.h - lower.h);
+    refV = lower.v + t * (upper.v - lower.v);
+  }
+
+  // ── 2. GEWICHTSSKALIERUNG ──
+  // Industriestandard (Schwalbe, SILCA): ca. +1 % Druck pro kg Abweichung von 75 kg
+  const gewichtFaktor = Math.max(0.65, Math.min(1.60, 1.0 + (gewicht - 75) * 0.010));
+  refH *= gewichtFaktor;
+  refV *= gewichtFaktor;
+
+  // ── 3. FELGENGRÖSSE ──
+  // Größere Felge = mehr Luftvolumen = etwas weniger Druck nötig (Schwalbe Pressure Prof)
   let radFaktor = 1.0;
-  if (rad === '26')      radFaktor = 1.05;
-  else if (rad === '27.5') radFaktor = 1.0;
-  else if (rad === '28') radFaktor = 0.97;
-  else if (rad === '29') radFaktor = 0.95;
-  else if (rad === 'rennrad') radFaktor = 1.10; // Rennrad: höherer Druck wegen schmaler Reifen und Asphalt
+  if      (rad === '26')      radFaktor = 1.05;
+  else if (rad === '27.5')    radFaktor = 1.01;
+  else if (rad === '28')      radFaktor = 1.00;  // Referenz
+  else if (rad === '29')      radFaktor = 0.97;
+  else if (rad === 'rennrad') radFaktor = 1.02;
+  refH *= radFaktor;
+  refV *= radFaktor;
 
-  // Basis-Druck nach Gewicht und Breite (bar)
-  // Schmale Reifen = hoher Druck, breite = niedrig
-  const breiteN = parseInt(breite);
-  let baseDruck;
-  if (breiteN <= 23)      baseDruck = 5.5 + (gewicht - 70) * 0.04;
-  else if (breiteN <= 28) baseDruck = 4.5 + (gewicht - 70) * 0.035;
-  else if (breiteN <= 38) baseDruck = 3.2 + (gewicht - 70) * 0.025;
-  else if (breiteN <= 50) baseDruck = 2.5 + (gewicht - 70) * 0.02;
-  else if (breiteN <= 57) baseDruck = 2.0 + (gewicht - 70) * 0.015;
-  else                    baseDruck = 1.6 + (gewicht - 70) * 0.012;
+  // ── 4. UNTERGRUND (absolut in bar) ──
+  // Quelle: SILCA K-Faktor Methodik – weniger Druck für mehr Kontaktfläche auf losem Grund
+  let grundAbzugH = 0.0, grundAbzugV = 0.0;
+  if (grund === 'schotter') {
+    grundAbzugH = breiteN <= 38 ? 0.40 : 0.30;
+    grundAbzugV = breiteN <= 38 ? 0.35 : 0.25;
+  } else if (grund === 'trail') {
+    grundAbzugH = breiteN <= 38 ? 0.70 : 0.45;
+    grundAbzugV = breiteN <= 38 ? 0.60 : 0.40;
+  }
+  refH -= grundAbzugH;
+  refV -= grundAbzugV;
 
-  // Profil-Korrektiv
-  let profilFaktor = 1.0;
-  if (profil === 'gravel') profilFaktor = 0.92;
-  if (profil === 'mtb')    profilFaktor = 0.85;
+  // ── 5. REIFENPROFIL ──
+  if (profil === 'gravel') { refH -= 0.10; refV -= 0.10; }
+  if (profil === 'mtb')    { refH -= 0.15; refV -= 0.15; }
 
-  // Untergrund-Korrektiv
-  let grundFaktor = 1.0;
-  if (grund === 'schotter') grundFaktor = 0.90;
-  if (grund === 'trail')    grundFaktor = 0.82;
+  // ── 6. TUBELESS ──
+  // Auf Asphalt: 0,3–0,4 bar weniger möglich (kein Einquetschplatten-Risiko)
+  // Off-Road: kleinerer Abzug – Untergrundkorrektur deckt den Haupteffekt bereits ab
+  // Quelle: SRAM/Zipp Tire Pressure Guide, Maxxis Tech Guide
+  if (typ === 'tubeless') {
+    let tAbzug;
+    if (breiteN >= 50) {
+      tAbzug = grund === 'asphalt' ? 0.40 : 0.20;
+    } else {
+      tAbzug = grund === 'asphalt' ? 0.30 : 0.15;
+    }
+    refH -= tAbzug;
+    refV -= tAbzug;
+  }
 
-  // Tubeless: 0.2 bar weniger möglich
-  const tubelessAbzug = typ === 'tubeless' ? 0.2 : 0.0;
+  // ── 7. PLAUSIBILITÄTS-GRENZEN ──
+  const isNarrow  = breiteN <= 28;
+  const isRennrad = rad === 'rennrad';
+  const maxH = (isRennrad || isNarrow) ? 8.5 : 5.5;
+  const maxV = (isRennrad || isNarrow) ? 8.0 : 5.0;
+  const minH = breiteN >= 50 ? 1.0 : (breiteN >= 38 ? 1.5 : 1.8);
+  const minV = breiteN >= 50 ? 0.8 : (breiteN >= 38 ? 1.3 : 1.5);
 
-  const druckBase = baseDruck * profilFaktor * grundFaktor * radFaktor - tubelessAbzug;
+  const druckH = Math.max(minH, Math.min(maxH, Math.round(refH * 10) / 10));
+  const druckV = Math.max(minV, Math.min(maxV, Math.round(refV * 10) / 10));
 
-  // Vorderrad: ~10% weniger als Hinterrad (weniger Last)
-  const druckH = Math.max(0.8, Math.round(druckBase * 10) / 10);
-  const druckV = Math.max(0.7, Math.round(druckBase * 0.90 * 10) / 10);
-
-  document.getElementById('druck-vorne').textContent = druckV.toFixed(1);
+  document.getElementById('druck-vorne').textContent  = druckV.toFixed(1);
   document.getElementById('druck-hinten').textContent = druckH.toFixed(1);
 
-  // Erklärung
+  // ── 8. ERKLÄRUNG ──
   let erkl = '';
-  if (rad === 'rennrad') {
-    erkl = 'Rennradreifen auf 700c laufen mit dem höchsten Druck aller Kategorien. Das minimiert den Rollwiderstand auf Asphalt. Bei Regen oder schlechtem Asphalt 0,3–0,5 bar weniger für mehr Sicherheit.';
+  if (rad === 'rennrad' || breiteN <= 23) {
+    erkl = 'Rennradreifen brauchen den höchsten Druck – das minimiert Rollwiderstand und Pannengefahr auf Asphalt. Bei Regen oder schlechtem Belag 0,3–0,5 bar weniger für mehr Grip.';
   } else if (breiteN <= 28) {
-    erkl = 'Schmale Reifen brauchen hohen Druck für Pannenschutz und geringen Rollwiderstand. Auf nasser Straße 0,2–0,3 bar weniger für mehr Grip.';
+    erkl = 'Schmale Trekking- und Gravel-Reifen laufen mit hohem Druck. Auf nasser Fahrbahn 0,2–0,3 bar weniger einplanen – das verbessert die Haftung spürbar.';
+  } else if (breiteN <= 38) {
+    erkl = 'Im mittleren Breitenbereich hast du Spielraum: mehr Druck = schneller auf Asphalt, weniger Druck = mehr Komfort und Grip auf losem Untergrund.';
   } else if (breiteN <= 50) {
-    erkl = 'Im mittleren Breitenbereich hast du Spielraum. Mehr Druck = schneller auf Asphalt. Weniger Druck = mehr Komfort und Grip auf losem Untergrund.';
+    erkl = 'Breite City- und Hybridreifen fahren mit moderatem Druck. Das Luftvolumen federt Unebenheiten schon ohne großen Komfortverlust ab.';
   } else {
-    erkl = 'Breite MTB-Reifen arbeiten mit vergleichsweise niedrigem Druck. Das Reifenvolumen schützt vor Felgenschlag. Zu viel Druck kostet Grip und macht das Rad unbeherrschbar bergab.';
+    erkl = 'MTB-Reifen arbeiten mit niedrigem Druck – das Volumen schützt vor Felgenschlag. Zu viel Druck kostet Traktion und macht das Rad bergab unberechenbar.';
   }
-  if (rad === '29') erkl += ' Das 29"-Rad rollt von Natur aus ruhiger über Hindernisse – das erlaubt minimal weniger Druck als ein 27,5"-Rad bei gleicher Bereifung.';
-  if (rad === '26') erkl += ' Das 26"-Rad reagiert direkter – es braucht etwas mehr Druck als ein 29er um denselben Rollwiderstand zu erzielen.';
-  if (typ === 'tubeless') {
-    erkl += ' Tubeless ermöglicht noch etwas weniger Druck ohne Pannenrisiko – dein Reifensystem dankt es mit besserem Grip und Komfort.';
-  }
-  if (grund === 'trail') {
-    erkl += ' Auf Trails gilt: lieber etwas zu wenig als zu viel. Der Reifen muss sich dem Untergrund anpassen können.';
-  }
+  if (rad === '29') erkl += ' 29"-Räder rollen ruhiger über Hindernisse – das erlaubt etwas weniger Druck als ein 27,5er bei gleicher Bereifung.';
+  if (rad === '26') erkl += ' 26"-Räder haben weniger Volumen und brauchen etwas mehr Druck, um denselben Rollwiderstand wie größere Laufräder zu erzielen.';
+  if (typ === 'tubeless') erkl += ' Tubeless erlaubt auf Asphalt 0,3–0,4 bar weniger, off-road etwa 0,2 bar weniger – kein Einquetschplatten-Risiko, besserer Grip.';
+  if (grund === 'trail')    erkl += ' Auf Trails gilt: lieber etwas zu wenig als zu viel – der Reifen muss sich dem Untergrund anpassen können.';
+  if (grund === 'schotter') erkl += ' Auf Schotter etwas weniger als auf Asphalt – mehr Kontaktfläche, mehr Kontrolle.';
+
   document.getElementById('druck-erklaerung').textContent = erkl;
 }
 
@@ -1189,6 +1329,39 @@ const faqData = {
     Günstige Schaltungen verschleißen schneller und sind schwerer einzustellen. Günstige Bremsen haben weniger Bremsleistung und kürzere Belag-Lebensdauern. Günstige Rahmen sind schwerer und weniger steif – was das Fahren weniger effizient und weniger angenehm macht. Günstige Lager laufen kürzer, günstige Züge rosten schneller, günstige Reifen greifen schlechter.<br><br>
     Das bedeutet nicht, dass jedes günstige Rad schlecht ist. Aber es bedeutet, dass man für wenig Geld in der Regel Kompromisse kauft – und diese Kompromisse haben einen Preis, der sich über die Zeit in Wartungskosten, Ersatzteilen und Enttäuschung ausdrückt.<br><br>
     Das teuerste Fahrrad ist das, das man nicht benutzt weil es keinen Spaß macht. Und das zweitteuerste ist das, das ständig Probleme macht. Ein einmalig gut investiertes Budget ist fast immer die günstigere Entscheidung auf lange Sicht.`
+  },
+  helm_alter_und_kauf: {
+    frage: 'Fahrradhelm – wie alt darf er sein, und worauf kommt es wirklich an?',
+    antwort: `Ein Helm der zehn Jahre alt ist und nie runtergefallen ist, sieht von außen gut aus. Er schützt dich aber nicht mehr so wie am ersten Tag. Warum – und was du wirklich wissen musst.<br><br>
+    <strong>Wie alt darf ein Helm sein?</strong><br><br>
+    Die offizielle Empfehlung der meisten Hersteller – darunter Giro, Bell, Scott und Uvex – lautet: <strong>maximal 5 Jahre ab Kaufdatum, oder sofort nach einem Sturz.</strong> Das klingt streng, hat aber einen guten Grund: Das Styropor im Inneren des Helms (EPS – Expanded Polystyrene) altert. UV-Strahlung, Schweiß, Reinigungsmittel und Temperaturschwankungen greifen das Material an – unsichtbar, aber messbar. Ein alter Helm bricht bei einem Aufprall anders als ein neuer – und das bedeutet weniger Schutz für deinen Kopf.<br><br>
+    Faustregel: Wer seinen Helm nicht mehr datieren kann oder ihn gebraucht gekauft hat, sollte ihn ersetzen.<br><br>
+    <strong>Nach einem Sturz: sofort wechseln</strong><br><br>
+    Das ist kein Marketing-Trick der Hersteller. EPS ist ein Einweg-Dämpfungsmaterial: Es absorbiert die Aufprallenergie beim ersten Einschlag – danach ist es dauerhaft verformt, auch wenn von außen nichts zu sehen ist. Wer nach einem Sturz mit demselben Helm weiterfährt, riskiert beim nächsten Aufprall ungeschützt zu sein. Manche Hersteller (z. B. Specialized, Trek) bieten einen kostengünstigen Crash-Replacement-Service an – das lohnt sich zu kennen.<br><br>
+    <strong>Welche Norm ist Pflicht?</strong><br><br>
+    In Europa gilt für Fahrradhelme die Norm <strong>EN 1078</strong>. Jeder im Handel erhältliche Helm muss diese Norm erfüllen – das ist gesetzlich vorgeschrieben. Auf dem Helm selbst (meist innen) ist das CE-Zeichen mit der Norm aufgedruckt. Wer einen Helm kauft, der kein CE-Zeichen trägt, kauft keinen Schutz.<br><br>
+    Darüber hinaus gibt es freiwillige Tests wie den <strong>MIPS-Standard</strong> (Multi-directional Impact Protection System) – eine zusätzliche Schicht im Helm, die bei schrägen Aufprällen die Rotationskräfte auf das Gehirn reduziert. MIPS ist kein Pflichtstandard, aber sinnvoll – besonders für MTB- und Gravel-Fahrer die auch im Gelände unterwegs sind. Mittlerweile ist MIPS auch in vielen erschwinglichen Helmen erhältlich.<br><br>
+    <strong>Passform – das wichtigste Kaufkriterium</strong><br><br>
+    Ein Helm der nicht sitzt, schützt nicht. Ein Helm muss fest am Kopf anliegen – kein Wackeln nach vorne, hinten oder seitlich. Der Kinnriemen schließt direkt unter dem Kinn, mit einem Finger Luft dazwischen. Die Verstellspindel am Hinterkopf wird so fest gedreht, dass der Helm nicht mehr nach vorne rutscht wenn man den Kopf neigt.<br><br>
+    Kopfformen sind unterschiedlich: manche Köpfe sind runder, andere eher oval. Nicht jeder Helm passt zu jeder Kopfform – auch wenn die Umfangsgröße stimmt. Wer die Möglichkeit hat, sollte Helme immer vor dem Kauf anprobieren.<br><br>
+    <strong>Preis und Qualität</strong><br><br>
+    Ein teurer Helm ist nicht zwingend sicherer als ein günstiger – beide müssen dieselbe Norm erfüllen. Was ein höherer Preis bringt: mehr Belüftung (mehr Luft, weniger Material → leichter und kühler), bessere Verarbeitungsqualität, MIPS, und in vielen Fällen eine bessere Passform-Anpassung. Für gelegentliche Stadtfahrten reicht ein solider Einsteiger-Helm. Für sportliche Einsätze, lange Ausfahrten oder Geländefahrten lohnt sich mehr Investition – weil Komfort und Passform hier direkt die Sicherheit beeinflussen.<br><br>
+    <strong>Zusammengefasst</strong><br><br>
+    Maximales Helmalter: 5 Jahre. Nach jedem Sturz mit Aufprall: sofort ersetzen. CE-Zeichen mit EN 1078 ist Pflicht. MIPS ist sinnvoll. Und das wichtigste Kaufkriterium ist nicht der Preis – sondern die Passform.`
+  },
+  reifendruck_8bar: {
+    frage: 'Rennradreifen mit 8 bar – stimmt diese Empfehlung noch?',
+    antwort: `Die kurze Antwort: Nein – zumindest nicht pauschal. 8 bar war jahrzehntelang die Standardempfehlung für schmale Rennradreifen. Sie ist aber mittlerweile wissenschaftlich überholt.<br><br>
+    <strong>Woher kommt die „8 bar"-Regel?</strong><br><br>
+    Die Empfehlung stammt ursprünglich aus dem Bahnradsport – also aus dem Velodrom, auf spiegelglattem Betonboden. Dort gilt tatsächlich: mehr Druck = weniger Walkarbeit = weniger Rollwiderstand. Diese Erkenntnis wurde damals unkritisch auf den Straßeneinsatz übertragen und hat sich als Faustregel festgesetzt.<br><br>
+    <strong>Was die moderne Forschung zeigt</strong><br><br>
+    Forscher wie Jan Heine (Rene Herse Cycles), das SILCA-Team und Schwalbe haben in den letzten 15 Jahren nachgewiesen, dass auf echten Straßenbelägen das Gegenteil gilt: Zu viel Druck lässt den Reifen über Mikro-Unebenheiten <em>hüpfen</em> statt darüber zu rollen. Das kostet Energie, verschlechtert die Bodenhaftung – besonders bei Nässe – und erhöht den Reifenverschleiß.<br><br>
+    Der optimale Druck liegt dort, wo der Reifen gerade genug nachgeben kann, um sich an den Belag anzupassen. Auf realen Straßen ist das ein spürbar niedrigerer Wert als das aufgedruckte Maximum.<br><br>
+    <strong>Was moderne Empfehlungen sagen</strong><br><br>
+    Für einen Fahrer mit 80 kg Körpergewicht auf 23 mm schmalen Reifen empfehlen SILCA und Schwalbe heute rund <strong>6,0–6,5 bar vorne, 7,0–7,5 bar hinten</strong>. 8 bar werden erst ab etwa 90–95 kg Fahrergewicht sinnvoll – und auch dann nur auf sehr glattem Asphalt.<br><br>
+    Das Hinterrad bekommt übrigens immer etwas mehr Druck als das Vorderrad, weil es rund 57 % des Systemgewichts trägt. Das Vorderrad entsprechend weniger – ein Detail, das bei der alten Einheitsempfehlung von „8 bar" komplett ignoriert wurde.<br><br>
+    <strong>Die Empfehlung des Luftdruck-Rechners</strong><br><br>
+    Der Rechner in diesem Tool basiert auf den aktuellen Daten von Schwalbe Pressure Prof, SILCA Pro Calculator und dem ADAC-Reifendruckguide 2026. Er gibt dir gewichts- und reifenspezifische Werte aus – getrennt für Vorder- und Hinterrad. Das ist präziser als jede Faustregel.`
   }
 };
 
@@ -1200,11 +1373,11 @@ const faqKategorien = [
   },
   {
     label: '🛒 Kauf & Entscheidung',
-    keys: ['haendler_vs_online','budget','hardtail_vs_fully','alu_vs_carbon','ebike_wann','gebraucht_kaufen','kauffehler','billig_teurer']
+    keys: ['haendler_vs_online','budget','hardtail_vs_fully','alu_vs_carbon','ebike_wann','gebraucht_kaufen','kauffehler','billig_teurer','helm_alter_und_kauf']
   },
   {
     label: '⚙️ Technik & Komponenten',
-    keys: ['laufradgroesse','shimano_vs_sram','einfach_vs_zweifach','tubeless','federweg','luftdruck']
+    keys: ['laufradgroesse','shimano_vs_sram','einfach_vs_zweifach','tubeless','federweg','luftdruck','reifendruck_8bar']
   },
   {
     label: '🔧 Wartung & Kosten',
@@ -1273,304 +1446,3 @@ function restartWizard() {
   window.scrollTo(0, 0);
 }
 
-// ---- DEV TESTPANEL ----
-const testSzenarien = [
-  {
-    label: '🏙 Stadt / Einsteiger',
-    a: { s_alter:30, s_gewicht:75, s_groesse:175, s_schrittl:82, s_armlaenge:55,
-         s_t1:90, s_t2:5, s_t3:0, s_t4:5,
-         s6:{value:'city',label:'Stadt'}, s8:{value:'km_low',label:'bis 30km'},
-         s9:{value:'hm_flach',label:'Flach'}, s10:{value:'ebike_nein',label:'Ohne Motor'},
-         s11:{value:'exp_einsteiger',label:'Einsteiger'} }
-  },
-  {
-    label: '🗺 Trekking / Hügelig',
-    a: { s_alter:45, s_gewicht:85, s_groesse:178, s_schrittl:83, s_armlaenge:58,
-         s_t1:60, s_t2:30, s_t3:5, s_t4:5,
-         s6:{value:'trekking',label:'Trekking'}, s8:{value:'km_mid',label:'30-100km'},
-         s9:{value:'hm_huegel',label:'Hügelig'}, s10:{value:'ebike_nein',label:'Ohne Motor'},
-         s11:{value:'exp_basics',label:'Basics'} }
-  },
-  {
-    label: '⚡ E-Bike / Berg',
-    a: { s_alter:55, s_gewicht:90, s_groesse:180, s_schrittl:85, s_armlaenge:60,
-         s_t1:40, s_t2:40, s_t3:10, s_t4:10,
-         s6:{value:'trekking',label:'Trekking'}, s8:{value:'km_mid',label:'30-100km'},
-         s9:{value:'hm_berg',label:'Bergig'}, s10:{value:'ebike_ja',label:'E-Bike'},
-         s11:{value:'exp_basics',label:'Basics'} }
-  },
-  {
-    label: '🪨 Gravel / Sportlich',
-    a: { s_alter:35, s_gewicht:72, s_groesse:182, s_schrittl:86, s_armlaenge:62,
-         s_t1:50, s_t2:30, s_t3:10, s_t4:10,
-         s6:{value:'gravel',label:'Gravel'}, s8:{value:'km_high',label:'100-200km'},
-         s9:{value:'hm_huegel',label:'Hügelig'}, s10:{value:'ebike_nein',label:'Ohne Motor'},
-         s11:{value:'exp_fortg',label:'Fortgeschritten'} }
-  },
-  {
-    label: '🏔 MTB Trail / Profi',
-    a: { s_alter:28, s_gewicht:75, s_groesse:176, s_schrittl:84, s_armlaenge:59,
-         s_t1:10, s_t2:20, s_t3:60, s_t4:10,
-         s6:{value:'mtb_trail',label:'MTB Trail'}, s8:{value:'km_high',label:'100-200km'},
-         s9:{value:'hm_berg',label:'Bergig'}, s10:{value:'ebike_nein',label:'Ohne Motor'},
-         s11:{value:'exp_profi',label:'Profi'} }
-  },
-  {
-    label: '⛰ XC MTB / Mittel',
-    a: { s_alter:38, s_gewicht:78, s_groesse:172, s_schrittl:80, s_armlaenge:56,
-         s_t1:20, s_t2:40, s_t3:30, s_t4:10,
-         s6:{value:'mtb_xc',label:'MTB XC'}, s8:{value:'km_mid',label:'30-100km'},
-         s9:{value:'hm_huegel',label:'Hügelig'}, s10:{value:'ebike_nein',label:'Ohne Motor'},
-         s11:{value:'exp_fortg',label:'Fortgeschritten'} }
-  },
-  {
-    label: '🏎 Rennrad / Viel km',
-    a: { s_alter:32, s_gewicht:68, s_groesse:180, s_schrittl:85, s_armlaenge:61,
-         s_t1:95, s_t2:3, s_t3:0, s_t4:2,
-         s6:{value:'rennrad',label:'Rennrad'}, s8:{value:'km_vhigh',label:'über 200km'},
-         s9:{value:'hm_berg',label:'Bergig'}, s10:{value:'ebike_nein',label:'Ohne Motor'},
-         s11:{value:'exp_profi',label:'Profi'} }
-  },
-  {
-    label: '👶 Kind / 24 Zoll',
-    a: { s_alter:11, s_gewicht:38, s_groesse:148, s_schrittl:68, s_armlaenge:42,
-         s_t1:50, s_t2:30, s_t3:10, s_t4:10,
-         s6:{value:'mtb_xc',label:'MTB XC'}, s8:{value:'km_low',label:'bis 30km'},
-         s9:{value:'hm_flach',label:'Flach'}, s10:{value:'ebike_nein',label:'Ohne Motor'},
-         s11:{value:'exp_einsteiger',label:'Einsteiger'} }
-  }
-];
-
-function loadTestSzenario(idx) {
-  const s = testSzenarien[idx];
-  answers = { ...s.a };
-  stepperData.alter = s.a.s_alter;
-  // Wizard ausblenden, direkt Ergebnis zeigen
-  document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
-  document.getElementById('step-result')?.classList.remove('active');
-  calcResult();
-  // Tab auf Kaufberater
-  showTab('berater');
-  // Dev-Panel-Status updaten
-  renderDevStatus();
-}
-
-function renderDevStatus() {
-  const el = document.getElementById('dev-status');
-  if (!el) return;
-  const a = answers;
-  el.innerHTML = `
-    <div style="font-size:11px; color:#555; line-height:1.8; font-family:monospace;">
-      <b>Alter:</b> ${a.s_alter} &nbsp; <b>Gewicht:</b> ${a.s_gewicht}kg &nbsp;
-      <b>Größe:</b> ${a.s_groesse}cm &nbsp; <b>Schritt:</b> ${a.s_schrittl}cm &nbsp; <b>Arm:</b> ${a.s_armlaenge}cm<br>
-      <b>Einsatz:</b> ${a.s6?.label||'–'} &nbsp; <b>km/W:</b> ${a.s8?.label||'–'} &nbsp;
-      <b>HM:</b> ${a.s9?.label||'–'} &nbsp; <b>Antrieb:</b> ${a.s10?.label||'–'} &nbsp; <b>Exp:</b> ${a.s11?.label||'–'}<br>
-      <b>Terrain:</b> Asphalt ${a.s_t1}% / Wald ${a.s_t2}% / Single ${a.s_t3}% / Feld ${a.s_t4}%
-    </div>`;
-}
-
-function toggleDevPanel() {
-  const panel = document.getElementById('dev-panel-body');
-  const btn = document.getElementById('dev-toggle-btn');
-  const isHidden = panel.style.display === 'none';
-  panel.style.display = isHidden ? 'block' : 'none';
-  btn.textContent = isHidden ? '▲ Schließen' : '▼ Testpanel';
-}
-
-
-// ===== DOM READY INIT =====
-document.addEventListener('DOMContentLoaded', function() {
-  initSliderAnswers();
-  renderFaqAccordion();
-});
-
-// ===== DEV TESTPANEL =====
-(function() {
-  // Buttons rendern
-  const container = document.getElementById('dev-btn-container');
-  if (!container) return;
-  testSzenarien.forEach((s, i) => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.textContent = s.label;
-    btn.style.cssText = 'background:#1c3448; color:#f5f1eb; border:none; padding:7px 12px; border-radius:5px; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap;';
-    btn.onclick = () => loadTestSzenario(i);
-    container.appendChild(btn);
-  });
-})();
-
-function toggleDevPanel() {
-  const body = document.getElementById('dev-panel-body');
-  const btn = document.getElementById('dev-toggle-btn');
-  const isHidden = body.style.display === 'none';
-  body.style.display = isHidden ? 'block' : 'none';
-  btn.textContent = isHidden ? '✕' : '▼';
-}
-
-function switchDevTab(tab) {
-  document.getElementById('dev-content-szenarien').style.display = tab === 'szenarien' ? 'block' : 'none';
-  document.getElementById('dev-content-logik').style.display = tab === 'logik' ? 'block' : 'none';
-  document.getElementById('dev-tab-szenarien').style.background = tab === 'szenarien' ? '#2d6e9e' : '#1c3448';
-  document.getElementById('dev-tab-szenarien').style.color = tab === 'szenarien' ? 'white' : '#7a9aac';
-  document.getElementById('dev-tab-logik').style.background = tab === 'logik' ? '#2d6e9e' : '#1c3448';
-  document.getElementById('dev-tab-logik').style.color = tab === 'logik' ? 'white' : '#7a9aac';
-}
-
-// Logik-Tabelle nach calcResult() befüllen
-const _origCalcResult = calcResult;
-function calcResultWithDevHook() {
-  _origCalcResult.apply(this, arguments);
-  renderDevLogik();
-}
-// calcResult überschreiben
-window.calcResult = calcResultWithDevHook;
-
-function exportTexte() {
-  const rows = document.querySelectorAll('#spec-grid .spec-row');
-  if (!rows.length) {
-    alert('Erst ein Szenario laden.');
-    return;
-  }
-
-  const rahmenVal   = document.querySelector('.rahmen-hl-val')?.textContent || '–';
-  const rahmenSub   = document.querySelector('.rahmen-hl-sub')?.textContent || '–';
-  const rahmenLabel = document.querySelector('.rahmen-hl-label')?.textContent || 'Rahmengröße';
-
-  let text = '====================================\nRADL HIAS – TEXT-EXPORT\n====================================\n\n';
-  text += '[' + rahmenLabel + ']\nEmpfehlung: ' + rahmenVal + '\nBeschreibung: ' + rahmenSub + '\n\n';
-
-  rows.forEach(function(row) {
-    const label = row.querySelector('.spec-label')?.textContent || '–';
-    const value = row.querySelector('.spec-value')?.textContent || '–';
-    const why   = (row.querySelector('.spec-why')?.textContent || '').trim();
-    const warn  = (row.querySelector('.spec-warn')?.textContent || '').trim();
-    const tipp  = (row.querySelector('.spec-tipp')?.textContent || '').trim();
-    text += '[' + label + ']\nEmpfehlung: ' + value + '\n';
-    if (why)  text += 'Begründung: ' + why + '\n';
-    if (warn) text += 'Warnung: ' + warn + '\n';
-    if (tipp) text += 'Tipp: ' + tipp + '\n';
-    text += '\n';
-  });
-
-  // Altes Modal entfernen
-  const oldModal = document.getElementById('dev-export-modal');
-  if (oldModal) oldModal.remove();
-
-  // Modal per createElement aufbauen
-  const modal = document.createElement('div');
-  modal.id = 'dev-export-modal';
-  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:99999;display:flex;align-items:flex-end;';
-
-  const sheet = document.createElement('div');
-  sheet.style.cssText = 'background:white;width:100%;border-radius:16px 16px 0 0;padding:20px 16px 32px;max-height:80vh;display:flex;flex-direction:column;gap:12px;overflow:hidden;';
-
-  // Header
-  const header = document.createElement('div');
-  header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;';
-  const title = document.createElement('span');
-  title.style.cssText = 'font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#1c3448;';
-  title.textContent = '📋 Text-Export';
-  const closeBtn = document.createElement('button');
-  closeBtn.type = 'button';
-  closeBtn.textContent = '✕';
-  closeBtn.style.cssText = 'background:#eee;border:none;padding:5px 10px;border-radius:4px;font-size:13px;cursor:pointer;';
-  closeBtn.onclick = function() { modal.remove(); };
-  header.appendChild(title);
-  header.appendChild(closeBtn);
-
-  // Hinweis
-  const hint = document.createElement('p');
-  hint.style.cssText = 'font-size:12px;color:#666;margin:0;';
-  hint.textContent = 'Kopiere diesen Text, füge ihn in deiner Nachricht an Claude ein und schreibe daneben was geändert werden soll.';
-
-  // Textarea
-  const ta = document.createElement('textarea');
-  ta.style.cssText = 'flex:1;min-height:280px;font-family:monospace;font-size:11px;border:1px solid #ccc;border-radius:6px;padding:10px;resize:none;color:#333;';
-  ta.value = text;
-
-  // Kopieren-Button
-  const copyBtn = document.createElement('button');
-  copyBtn.type = 'button';
-  copyBtn.textContent = '📋 Alles kopieren';
-  copyBtn.style.cssText = 'background:#1c3448;color:white;border:none;padding:14px;border-radius:7px;font-size:14px;font-weight:700;cursor:pointer;';
-  copyBtn.onclick = function() {
-    ta.select();
-    ta.setSelectionRange(0, 99999);
-    try {
-      document.execCommand('copy');
-      copyBtn.textContent = '✓ Kopiert!';
-      copyBtn.style.background = '#2a6a3a';
-    } catch(e) {}
-    setTimeout(function() {
-      copyBtn.textContent = '📋 Alles kopieren';
-      copyBtn.style.background = '#1c3448';
-    }, 2000);
-  };
-
-  sheet.appendChild(header);
-  sheet.appendChild(hint);
-  sheet.appendChild(ta);
-  sheet.appendChild(copyBtn);
-  modal.appendChild(sheet);
-  document.body.appendChild(modal);
-}
-
-function renderDevLogik() {
-  const el = document.getElementById('dev-logik-table');
-  if (!el) return;
-
-  // specs aus dem DOM auslesen (nach dem Rendern)
-  const rows = document.querySelectorAll('#spec-grid .spec-row');
-  if (!rows.length) {
-    el.innerHTML = '<span style="font-size:11px;color:#999;">Keine Specs geladen.</span>';
-    return;
-  }
-
-  // Rahmengröße extra auslesen
-  const rahmenVal = document.querySelector('.rahmen-hl-val')?.textContent || '–';
-  const rahmenSub = document.querySelector('.rahmen-hl-sub')?.textContent || '';
-  const rahmenLabel = document.querySelector('.rahmen-hl-label')?.textContent || 'Rahmengröße';
-
-  let html = `<table style="width:100%; border-collapse:collapse; font-size:11px;">
-    <thead>
-      <tr style="background:#1c3448; color:#a8c8dc; text-align:left;">
-        <th style="padding:6px 8px; width:120px;">Komponente</th>
-        <th style="padding:6px 8px; width:130px;">Empfehlung</th>
-        <th style="padding:6px 8px;">Begründung</th>
-        <th style="padding:6px 8px; width:160px;">⚠ Warnung</th>
-        <th style="padding:6px 8px; width:160px;">💡 Tipp</th>
-      </tr>
-    </thead>
-    <tbody>
-    <tr style="background:#e8f4ec; border-bottom:1px solid #ccc;">
-      <td style="padding:5px 8px; font-weight:700; color:#1c3448;">${rahmenLabel}</td>
-      <td style="padding:5px 8px; font-weight:700; color:#1c3448;">${rahmenVal}</td>
-      <td style="padding:5px 8px; color:#555;">${rahmenSub}</td>
-      <td style="padding:5px 8px;">–</td>
-      <td style="padding:5px 8px;">–</td>
-    </tr>`;
-
-  rows.forEach((row, i) => {
-    const label = row.querySelector('.spec-label')?.textContent || '–';
-    const value = row.querySelector('.spec-value')?.textContent || '–';
-    const why   = row.querySelector('.spec-why')?.textContent || '–';
-    const warn  = row.querySelector('.spec-warn')?.textContent || '–';
-    const tipp  = row.querySelector('.spec-tipp')?.textContent || '–';
-    const bg = i % 2 === 0 ? '#ffffff' : '#f5f7f9';
-    html += `<tr style="background:${bg}; border-bottom:1px solid #e0e0e0; vertical-align:top;">
-      <td style="padding:5px 8px; font-weight:700; color:#1c3448; white-space:nowrap;">${label}</td>
-      <td style="padding:5px 8px; font-weight:600; color:#254560;">${value}</td>
-      <td style="padding:5px 8px; color:#444;">${why}</td>
-      <td style="padding:5px 8px; color:#c85a14;">${warn}</td>
-      <td style="padding:5px 8px; color:#2a6a3a;">${tipp}</td>
-    </tr>`;
-  });
-
-  html += '</tbody></table>';
-  el.innerHTML = html;
-
-  // Automatisch auf Logik-Tab wechseln wenn Panel offen
-  if (document.getElementById('dev-panel-body').style.display !== 'none') {
-    switchDevTab('logik');
-  }
-}
