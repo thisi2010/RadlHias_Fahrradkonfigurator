@@ -957,7 +957,7 @@ function toggleGebrauchtStep(num) {
   const chev = document.getElementById('gb-chev-' + num);
   const isOpen = body.style.display !== 'none';
   // Close all
-  [1,2,3,4,5,6,7].forEach(function(n) {
+  [1,2,3,4,5,6,7,8].forEach(function(n) {
     const b = document.getElementById('gb-body-' + n);
     const c = document.getElementById('gb-chev-' + n);
     if (b) b.style.display = 'none';
@@ -982,7 +982,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (b) b.style.display = 'none';
   });
   // Gebraucht-Check: alle Schritte geschlossen
-  [1,2,3,4,5,6,7].forEach(function(n) {
+  [1,2,3,4,5,6,7,8].forEach(function(n) {
     const b = document.getElementById('gb-body-' + n);
     if (b) b.style.display = 'none';
   });
