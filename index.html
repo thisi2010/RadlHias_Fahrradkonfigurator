@@ -65,7 +65,7 @@
       cursor:pointer;
       width:100%;
       max-width:360px;
-    ">🚲 Mein neues Fahrrad konfigurieren</button>
+    ">APP JETZT STARTEN</button>
 
     <p style="font-family:'Barlow',sans-serif; font-size:11px; color:#5a7a8a; text-align:center; margin-top:20px; max-width:320px; line-height:1.6;">
       Mit dem Klick bestätigst du, dass du den Hinweis zur Natur dieser Empfehlungen gelesen hast.
@@ -544,7 +544,7 @@
   <div class="result-wrap" style="margin-top:25px;">
     <div class="result-header">
       <div class="logo-script" style="font-size:32px;">Bike-Fitting</div>
-      <div class="result-title">In 4 Schritten zur perfekten Sitzposition</div>
+      <div class="result-title">In 5 Schritten zur perfekten Sitzposition</div>
     </div>
 
     <div style="padding:16px 20px 8px;">
@@ -788,6 +788,45 @@
       </div>
     </div>
 
+    <div class="fitting-step" id="fit-step-5">
+      <div class="fitting-step-header" onclick="toggleFitStep(5)">
+        <div class="fitting-step-num">05</div>
+        <div class="fitting-step-title">
+          <div class="fitting-step-label">Bremshebel und Griffe ausrichten</div>
+          <div class="fitting-step-sub">Ergonomische Position für Hände und Handgelenke</div>
+        </div>
+        <div class="fitting-chevron" id="fit-chev-5">›</div>
+      </div>
+      <div class="fitting-step-body" id="fit-body-5" style="display:none;">
+        <div class="fitting-instruction">
+          <div class="fitting-instruction-step">
+            <div class="fitting-step-dot">1</div>
+            <div>Setze Dich aufs Rad. Lege die Finger auf die <strong>Bremshebel</strong> – so als würdest Du bremsen wollen. In dieser Position sollten Finger, Handrücken und Unterarm eine gerade Linie bilden. Drehe die Bremsgriffe in die erforderliche Position.</div>
+          </div>
+          <div class="fitting-instruction-step">
+            <div class="fitting-step-dot">2</div>
+            <div><strong>„Ergo"-Griffe</strong> sollen deine Hände unterstützen, in der richtigen Position zu bleiben. Diese müssen genau so montiert bzw. gedreht werden, dass der Knick zwischen Hand und Unterarm vermieden wird. Drehe die erweiterte Grifffläche so weit nach oben, bis sich die gerade Linie ergibt!</div>
+          </div>
+        </div>
+        <div class="fitting-hint" style="margin-bottom:12px;">💡 Ein Knick im Handgelenk kann dafür sorgen, dass Nerven eingeklemmt werden und die Hände einschlafen.</div>
+        <div class="fitting-check-box">
+          <div class="fitting-check-title">Was du spürst – was es bedeutet</div>
+          <div class="fitting-check-row bad">
+            <div class="fitting-check-icon">✗</div>
+            <div><strong>Handgelenk knickt ab</strong> → Bremshebel und Griffe neu ausrichten</div>
+          </div>
+          <div class="fitting-check-row bad">
+            <div class="fitting-check-icon">✗</div>
+            <div><strong>Griffe verdrehen oder sitzen lose</strong> → Befestigung prüfen und festziehen</div>
+          </div>
+          <div class="fitting-check-row good">
+            <div class="fitting-check-icon">✓</div>
+            <div><strong>Hände und Unterarme bilden eine Gerade und der Hebel ist gut erreichbar</strong> → Position passt</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Abschluss -->
     <div style="margin:20px 0 8px; padding:18px 20px; background:var(--navy); border-radius:12px; color:var(--cream);">
       <div style="font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--blue-lt); margin-bottom:10px;">🏁 Letzter Check</div>
@@ -837,10 +876,6 @@
             <div class="fitting-step-dot">3</div>
             <div>Kontrolliere die <strong>Pedale</strong>. Verbogen oder offensichtlich beschädigt?</div>
           </div>
-          <div class="fitting-instruction-step">
-            <div class="fitting-step-dot">4</div>
-            <div>Schau Dir den <strong>hinteren Reifen</strong> an. Übermäßig abgefahren oder abgebremst (flache Stelle in der Lauffläche)?</div>
-          </div>
         </div>
         <div class="fitting-check-box">
           <div class="fitting-check-title">Was du siehst – was es bedeutet</div>
@@ -875,11 +910,19 @@
         <div class="fitting-instruction">
           <div class="fitting-instruction-step">
             <div class="fitting-step-dot">1</div>
-            <div>Schau Dir das <strong>Profil</strong> an. Noch deutlich erkennbar – oder schon fast glatt gefahren?</div>
+            <div>Schau Dir das <strong>Profil</strong> an. Ist es noch deutlich erkennbar – oder schon fast glattgefahren oder abgebremst? Rennradreifen sind „Ballon"-artig rund. Wenn diese deutlich eckiger und flach sind, dann sind diese zu erneuern!</div>
           </div>
           <div class="fitting-instruction-step">
             <div class="fitting-step-dot">2</div>
-            <div>Prüfe die <strong>Reifenflanken</strong> auf Risse. Diese entstehen durch dauerhaft zu geringen Luftdruck – ein eindeutiges Zeichen für fehlende Grundpflege.</div>
+            <div>Prüfe ob der Gummi <strong>porös</strong> ist!</div>
+          </div>
+          <div class="fitting-instruction-step">
+            <div class="fitting-step-dot">3</div>
+            <div>Reifen mit <strong>farbigen Seitenwänden</strong> bekommen oft Risse am Übergang (vom farbigen Teil zur Lauffläche). Lass ggf. etwas Luft ab und drücke den Reifen zusammen, um den Riss deutlicher zu sehen!</div>
+          </div>
+          <div class="fitting-instruction-step">
+            <div class="fitting-step-dot">4</div>
+            <div>Hat ein Reifen viele <strong>schräge Risse an der gesamten Seitenwand</strong>, deutet das darauf hin, dass lange mit zu wenig Luftdruck gefahren und das Rad nur wenig gewartet wurde.</div>
           </div>
         </div>
         <div class="fitting-check-box">
@@ -894,7 +937,7 @@
           </div>
           <div class="fitting-check-row good">
             <div class="fitting-check-icon">✓</div>
-            <div><strong>Profil deutlich sichtbar, keine Risse</strong> → alles gut</div>
+            <div><strong>Profil deutlich sichtbar, keine Risse, nicht porös</strong> → alles gut</div>
           </div>
         </div>
         <div class="fitting-hint" style="background:#fff7f0; border-left:3px solid var(--orange); border-radius:0 8px 8px 0;">💰 Materialkosten neue Reifen: ca. 50–80 €</div>
@@ -915,22 +958,19 @@
         <div class="fitting-instruction">
           <div class="fitting-instruction-step">
             <div class="fitting-step-dot">1</div>
-            <div>Halte den <strong>Hinterbau</strong> mit einer Hand fest und versuche das Hinterrad mit der anderen Hand in Achsrichtung zu bewegen – also seitlich, nicht drehend.</div>
+            <div>Halte den <strong>Hinterbau</strong> mit einer Hand fest und versuche das Hinterrad mit der anderen Hand in Achsrichtung zu bewegen (seitlich). Versuche ein Klappern bewusst zu provozieren! Klappert das Radlager, so muss es nachgestellt werden. Bei Industrielagern sind die Lager zu ersetzen, da diese nicht einstellbar sind.</div>
           </div>
           <div class="fitting-instruction-step">
             <div class="fitting-step-dot">2</div>
             <div>Beim <strong>Vorderrad</strong> hältst du die Gabel fest und prüfst auf die gleiche Weise.</div>
           </div>
-          <div class="fitting-instruction-step">
-            <div class="fitting-step-dot">3</div>
-            <div>Bewusst <strong>hin und her wackeln!</strong> Nur so spürst du minimales Spiel.</div>
-          </div>
         </div>
+        <div class="fitting-hint" style="margin-bottom:12px;">💡 Achte bei Konus-Lagern (z. B. SHIMANO) darauf, ob die Lager knacken oder reiben. Das würde auf einen Defekt hinweisen.</div>
         <div class="fitting-check-box">
           <div class="fitting-check-title">Was du spürst – was es bedeutet</div>
           <div class="fitting-check-row bad">
             <div class="fitting-check-icon">✗</div>
-            <div><strong>Spiel spürbar</strong> → lockeres oder defektes Lager – verbessert deine Verhandlungsposition</div>
+            <div><strong>Spiel spürbar</strong> → Lockeres oder defektes Lager. Neu einstellen oder ersetzen!</div>
           </div>
           <div class="fitting-check-row good">
             <div class="fitting-check-icon">✓</div>
@@ -1055,22 +1095,22 @@
           </div>
           <div class="fitting-instruction-step">
             <div class="fitting-step-dot">3</div>
-            <div>Drehe den <strong>Lenker</strong>. Lässt er sich leicht und gleichmäßig drehen? Sehr gut! Ist das Steuerlager zu fest eingestellt, merkst Du das daran, dass sich der Lenker nicht leicht drehen lässt und das Lager reibt oder sogar knackt.</div>
+            <div>Drehe den <strong>Lenker</strong>. Lässt er sich leicht und gleichmäßig drehen? Sehr gut! Dreht er sich schwer aber gleichmäßig und ohne Reiben oder Knacken? Dann muss das Lager nur neu eingestellt werden. Knackt und klappert das Lager, muss es ersetzt werden.</div>
           </div>
         </div>
         <div class="fitting-check-box">
           <div class="fitting-check-title">Was du spürst – was es bedeutet</div>
           <div class="fitting-check-row bad">
             <div class="fitting-check-icon">✗</div>
-            <div><strong>Klappern oder Wackeln beim Schaukeln</strong> → Steuerlager nachstellen</div>
+            <div><strong>Klappern oder Wackeln beim Schaukeln</strong> → Steuerlager nachstellen. Eventuell Defekt.</div>
           </div>
           <div class="fitting-check-row bad">
             <div class="fitting-check-icon">✗</div>
-            <div><strong>Das Steuerlager reibt oder knackt beim Drehen</strong> → Lager zu fest eingestellt oder defekt</div>
+            <div><strong>Der Lenker lässt sich schwer drehen, dreht aber gleichmäßig</strong> → Lager zu fest eingestellt.</div>
           </div>
           <div class="fitting-check-row good">
             <div class="fitting-check-icon">✓</div>
-            <div><strong>Kein Klappern, Lenker dreht leicht und gleichmäßig</strong> → Steuerlager ok</div>
+            <div><strong>Kein Klappern, Lenker dreht leicht und gleichmäßig</strong> → Steuerlager ok.</div>
           </div>
         </div>
         <div class="fitting-hint">💡 Viele Besitzer schrauben vorsorglich alle erreichbaren Schrauben fest, ohne zu wissen wie ein Steuerlager korrekt eingestellt wird. Lass Dich also nicht abschrecken, wenn sich der Lenker nur schwer dreht! Entscheidend ist, dass das Lager nicht klappert, reibt oder knackt.</div>
@@ -1114,7 +1154,13 @@
             <div>Lehre zeigt <strong>&lt; 0,75 %</strong> → Antrieb noch in Ordnung</div>
           </div>
         </div>
-        <div class="fitting-hint" style="background:#fff7f0; border-left:3px solid var(--orange); border-radius:0 8px 8px 0;">💰 Kette + Kassette je nach System: ca. 55–180 €</div>
+        <div class="fitting-hint">💡 Um dauerhaft Geld zu sparen, solltest Du Ketten regelmäßig tauschen und die Gänge gleichmäßig nutzen.<br><br>
+          &bull; 6/7/8-fach Kette: immer nach 3.500 km<br>
+          &bull; 9-fach Kette: nach 2.500–3.000 km<br>
+          &bull; 10-fach Kette: nach 2.000 km<br>
+          &bull; 11/12-fach Ketten: immer nach 1.500–2.000 km<br><br>
+          Auf diese Weise kannst Du die Kassette und Kettenblätter über viele Ketten hinweg fahren und sparst viel Geld.</div>
+        <div class="fitting-hint" style="background:#fff7f0; border-left:3px solid var(--orange); border-radius:0 8px 8px 0; margin-top:8px;">💰 Kette + Kassette je nach System: ca. 55–180 €</div>
       </div>
     </div>
 
@@ -1132,45 +1178,45 @@
         <div class="fitting-instruction">
           <div class="fitting-instruction-step">
             <div class="fitting-step-dot">1</div>
-            <div>Prüfe die <strong>Schaltseile</strong>: Sind sie verrostet? Gleiten sie frei durch die Bowdenzüge?</div>
-          </div>
-          <div class="fitting-instruction-step">
-            <div class="fitting-step-dot">2</div>
-            <div>Drücke die <strong>Schalthebel</strong>. Greifen sie sauber – oder rutschen sie durch?</div>
+            <div>Drücke mal die <strong>Schalthebel</strong>. Greifen diese den nächsten Gang mit einem deutlichen Klicken? Oder rutschen sie durch?</div>
           </div>
         </div>
-        <div class="fitting-hint">💡 Rutscht der Schalthebel durch, muss das kein Defekt sein. Oft ist nur das Fett im Hebel verharzt. Der Schalthebel wird zerlegt, entfettet und neu geschmiert – danach funktioniert er in 90 % der Fälle wieder wie neu. Bei der Gelegenheit gleich das Schaltseil mittauschen.</div>
+        <div class="fitting-hint">💡 Rutscht der Schalthebel durch, muss das kein Defekt sein. Oft ist nur das Fett im Hebel zu alt und verharzt. In einem solchen Fall sollte der Schalthebel zerlegt, entfettet und neu geschmiert werden. Danach funktioniert er in 90 % der Fälle wieder wie neu. Tausche doch bei dieser Gelegenheit auch gleich die Schaltseile.</div>
         <div class="fitting-instruction">
           <div class="fitting-instruction-step">
+            <div class="fitting-step-dot">2</div>
+            <div>Schau Dir die <strong>Schaltseile</strong> genauer an! Sind sie verrostet oder geknickt? Oder gleiten sie frei durch die Bowden?</div>
+          </div>
+          <div class="fitting-instruction-step">
             <div class="fitting-step-dot">3</div>
-            <div>Fasse die <strong>untere Rolle am Schaltwerk</strong> an und bewege sie in Achsrichtung hin und her. Kein oder nur sehr wenig Spiel = in Ordnung. Wackelt es deutlich → neues Schaltwerk fällig.</div>
+            <div>Fasse die <strong>untere Rolle am Schaltwerk</strong> (Schaltung hinten) an und bewege sie in Achsrichtung (innen/außen) hin und her. Spürst Du hier kein oder nur sehr wenig Spiel, ist es in Ordnung. Wackelt es deutlich, dann ist es verschlissen.</div>
           </div>
           <div class="fitting-instruction-step">
             <div class="fitting-step-dot">4</div>
-            <div>Geh <strong>hinter das Fahrrad</strong> und schau auf das Schaltauge (dort, wo das Schaltwerk angeschraubt ist). Steht das Schaltwerk senkrecht nach unten → alles gut. Zeigt es Richtung Speichen → das Schaltauge muss neu ausgerichtet werden.</div>
+            <div>Gehe mal <strong>hinter das Fahrrad</strong> und schaue Dir die Schaltung von hinten an! Steht das Schaltwerk perfekt senkrecht? Oder sieht es nach innen gebogen aus? Orientiere dich an der oberen Rolle und dem Gang, der eingelegt ist. Diese zwei müssen genau untereinander stehen.</div>
           </div>
         </div>
         <div class="fitting-check-box">
           <div class="fitting-check-title">Was du siehst – was es bedeutet</div>
           <div class="fitting-check-row bad">
             <div class="fitting-check-icon">✗</div>
-            <div><strong>Schaltseile verrostet oder haken im Bowden</strong> → Seile und Hüllen erneuern</div>
+            <div><strong>Schaltseile verrostet oder geknickt</strong> → Seile und Hüllen erneuern.</div>
           </div>
           <div class="fitting-check-row bad">
             <div class="fitting-check-icon">✗</div>
-            <div><strong>Schalthebel rutscht durch</strong> → meistens Verharzung, seltener Defekt – Service nötig</div>
+            <div><strong>Schalthebel rutscht durch</strong> → Selten ein wirklicher Defekt – Innere Reinigung und neue Schaltseile!</div>
           </div>
           <div class="fitting-check-row bad">
             <div class="fitting-check-icon">✗</div>
-            <div><strong>Deutliches Spiel im Schaltwerk</strong> → Schaltwerk tauschen</div>
+            <div><strong>Deutliches Spiel im Schaltwerk</strong> → Schaltwerk wechseln.</div>
           </div>
           <div class="fitting-check-row bad">
             <div class="fitting-check-icon">✗</div>
-            <div><strong>Schaltwerk zeigt Richtung Speichen</strong> → Schaltauge ausrichten lassen. Bis dahin nicht auf das größte Ritzel schalten!</div>
+            <div><strong>Schaltwerk ist in Richtung der Speichen gebogen</strong> → Schaltauge ausrichten lassen. Bis dahin nicht auf das größte Ritzel schalten!</div>
           </div>
           <div class="fitting-check-row good">
             <div class="fitting-check-icon">✓</div>
-            <div><strong>Seile sauber, Hebel greifen, Schaltwerk senkrecht und ohne Spiel</strong> → alles in Ordnung</div>
+            <div><strong>Seile glatt und sauber, Hebel greifen und klicken, Schaltwerk senkrecht und ohne Spiel</strong> → alles in Ordnung</div>
           </div>
         </div>
         <div class="fitting-hint" style="background:#fff7f0; border-left:3px solid var(--orange); border-radius:0 8px 8px 0;">💰 Seilzug + Bowden: ca. 15–25 € Material. Schalthebel-Service in der Werkstatt: ca. 30–60 €. Neues Schaltwerk je nach Gruppe: 40–300 €. Schaltauge richten: 15–30 €.</div>
